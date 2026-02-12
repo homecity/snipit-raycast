@@ -9,6 +9,12 @@ import {
 } from "@raycast/api";
 import { useState } from "react";
 
+interface SnippetResponse {
+  content: string;
+  language?: string;
+  title?: string;
+}
+
 export default function PasteSnippet() {
   const [url, setUrl] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +48,7 @@ export default function PasteSnippet() {
         throw new Error("Failed to fetch snippet");
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as SnippetResponse;
       await Clipboard.paste(data.content);
       await showHUD("✓ Snippet pasted");
     } catch (error) {
