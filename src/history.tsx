@@ -24,7 +24,7 @@ function formatDate(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
-  
+
   if (diff < 60000) return "Just now";
   if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
   if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
@@ -54,11 +54,13 @@ export default function History() {
   }
 
   async function clearHistory() {
-    if (await confirmAlert({
-      title: "Clear History",
-      message: "Are you sure you want to clear all snippet history?",
-      primaryAction: { title: "Clear", style: Alert.ActionStyle.Destructive },
-    })) {
+    if (
+      await confirmAlert({
+        title: "Clear History",
+        message: "Are you sure you want to clear all snippet history?",
+        primaryAction: { title: "Clear", style: Alert.ActionStyle.Destructive },
+      })
+    ) {
       setItems([]);
       await LocalStorage.removeItem("snippet-history");
     }

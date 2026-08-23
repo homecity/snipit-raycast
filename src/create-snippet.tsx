@@ -59,7 +59,15 @@ const EXPIRY_OPTIONS = [
   { value: "1209600000", title: "2 weeks" },
 ];
 
-async function createSnippet(options: SnippetOptions): Promise<{ id: string; url: string }> {
+interface ApiResponse {
+  id: string;
+  url: string;
+  error?: string;
+}
+
+async function createSnippet(
+  options: SnippetOptions,
+): Promise<{ id: string; url: string }> {
   const response = await fetch("https://snipit.sh/api/snippets", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -74,11 +82,11 @@ async function createSnippet(options: SnippetOptions): Promise<{ id: string; url
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Failed to create snippet");
+    const errorData = (await response.json()) as ApiResponse;
+    throw new Error(errorData.error || "Failed to create snippet");
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as ApiResponse;
   return { id: data.id, url: `https://snipit.sh${data.url}` };
 }
 
@@ -87,7 +95,10 @@ async function addToHistory(item: HistoryItem) {
   const items: HistoryItem[] = history ? JSON.parse(history) : [];
   items.unshift(item);
   // Keep last 50 items
-  await LocalStorage.setItem("snippet-history", JSON.stringify(items.slice(0, 50)));
+  await LocalStorage.setItem(
+    "snippet-history",
+    JSON.stringify(items.slice(0, 50)),
+  );
 }
 
 export default function CreateSnippet() {
@@ -146,7 +157,10 @@ export default function CreateSnippet() {
     <Form
       actions={
         <ActionPanel>
-          <Action.SubmitForm title="Create & Copy URL" onSubmit={handleSubmit} />
+          <Action.SubmitForm
+            title="Create & Copy URL"
+            onSubmit={handleSubmit}
+          />
         </ActionPanel>
       }
     >
@@ -157,9 +171,18 @@ export default function CreateSnippet() {
         value={content}
         onChange={setContent}
       />
-      <Form.Dropdown id="language" title="Language" value={language} onChange={setLanguage}>
+      <Form.Dropdown
+        id="language"
+        title="Language"
+        value={language}
+        onChange={setLanguage}
+      >
         {LANGUAGES.map((lang) => (
-          <Form.Dropdown.Item key={lang.value} value={lang.value} title={lang.title} />
+          <Form.Dropdown.Item
+            key={lang.value}
+            value={lang.value}
+            title={lang.title}
+          />
         ))}
       </Form.Dropdown>
       <Form.TextField
@@ -169,9 +192,18 @@ export default function CreateSnippet() {
         value={title}
         onChange={setTitle}
       />
-      <Form.Dropdown id="expiresIn" title="Expires In" value={expiresIn} onChange={setExpiresIn}>
+      <Form.Dropdown
+        id="expiresIn"
+        title="Expires In"
+        value={expiresIn}
+        onChange={setExpiresIn}
+      >
         {EXPIRY_OPTIONS.map((opt) => (
-          <Form.Dropdown.Item key={opt.value} value={opt.value} title={opt.title} />
+          <Form.Dropdown.Item
+            key={opt.value}
+            value={opt.value}
+            title={opt.title}
+          />
         ))}
       </Form.Dropdown>
       <Form.Checkbox
