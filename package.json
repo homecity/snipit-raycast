@@ -18,6 +18,13 @@
       "mode": "view"
     },
     {
+      "name": "create-env",
+      "title": "Create Env",
+      "subtitle": "snipit.sh",
+      "description": "One-time .env / secrets paste with burn-after-read and 1h expiry by default",
+      "mode": "view"
+    },
+    {
       "name": "paste-snippet",
       "title": "Paste Snippet",
       "subtitle": "snipit.sh",
