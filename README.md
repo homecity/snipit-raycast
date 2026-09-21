@@ -35,5 +35,6 @@ Share code snippets securely with [snipit.sh](https://snipit.sh) directly from R
 ## Links
 
 - [snipit.sh](https://snipit.sh)
+- [Env paste](https://snipit.sh/env) — burn-after-read + short expiry; CLI: `snipit env`
 - [CLI Tool](https://snipit.sh/cli)
 - [API Docs](https://snipit.sh/docs)
