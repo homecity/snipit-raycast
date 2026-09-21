@@ -9,22 +9,24 @@ import {
 } from "@raycast/api";
 import { useState, useEffect } from "react";
 import {
-  LANGUAGES,
   EXPIRY_OPTIONS,
+  ONE_HOUR_MS,
   createSnippet,
   addToHistory,
 } from "./lib/snipit";
 
-export default function CreateSnippet() {
+/**
+ * Create Env — matches snipit.sh /env and CLI `snipit env`:
+ * burn-after-read ON + 1h expiry by default.
+ */
+export default function CreateEnv() {
   const [content, setContent] = useState("");
-  const [language, setLanguage] = useState("plaintext");
   const [title, setTitle] = useState("");
-  const [expiresIn, setExpiresIn] = useState("86400000");
-  const [burnAfterRead, setBurnAfterRead] = useState(false);
+  const [expiresIn, setExpiresIn] = useState(ONE_HOUR_MS);
+  const [burnAfterRead, setBurnAfterRead] = useState(true);
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    // Auto-fill from clipboard
     Clipboard.readText().then((text) => {
       if (text) setContent(text);
     });
@@ -37,11 +39,11 @@ export default function CreateSnippet() {
     }
 
     try {
-      showToast({ style: Toast.Style.Animated, title: "Creating snippet..." });
+      showToast({ style: Toast.Style.Animated, title: "Creating env paste..." });
 
       const result = await createSnippet({
         content,
-        language,
+        language: "plaintext",
         title: title || undefined,
         expiresIn,
         burnAfterRead,
@@ -52,8 +54,8 @@ export default function CreateSnippet() {
       await addToHistory({
         id: result.id,
         url: result.url,
-        title: title || undefined,
-        language,
+        title: title || ".env",
+        language: "plaintext",
         createdAt: new Date().toISOString(),
       });
 
@@ -61,7 +63,7 @@ export default function CreateSnippet() {
     } catch (error) {
       showToast({
         style: Toast.Style.Failure,
-        title: "Failed to create snippet",
+        title: "Failed to create env paste",
         message: error instanceof Error ? error.message : "Unknown error",
       });
     }
@@ -78,31 +80,18 @@ export default function CreateSnippet() {
         </ActionPanel>
       }
     >
+      <Form.Description text="One-time .env / secrets paste. Defaults: burn-after-read on, 1 hour expiry (same as snipit.sh /env)." />
       <Form.TextArea
         id="content"
         title="Content"
-        placeholder="Paste your code or text here..."
+        placeholder="Paste .env, API keys, or secrets here..."
         value={content}
         onChange={setContent}
       />
-      <Form.Dropdown
-        id="language"
-        title="Language"
-        value={language}
-        onChange={setLanguage}
-      >
-        {LANGUAGES.map((lang) => (
-          <Form.Dropdown.Item
-            key={lang.value}
-            value={lang.value}
-            title={lang.title}
-          />
-        ))}
-      </Form.Dropdown>
       <Form.TextField
         id="title"
         title="Title"
-        placeholder="Optional title"
+        placeholder="Optional title (e.g. staging.env)"
         value={title}
         onChange={setTitle}
       />

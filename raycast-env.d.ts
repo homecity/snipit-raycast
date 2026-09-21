@@ -15,6 +15,8 @@ declare type Preferences = ExtensionPreferences
 declare namespace Preferences {
   /** Preferences accessible in the `create-snippet` command */
   export type CreateSnippet = ExtensionPreferences & {}
+  /** Preferences accessible in the `create-env` command */
+  export type CreateEnv = ExtensionPreferences & {}
   /** Preferences accessible in the `paste-snippet` command */
   export type PasteSnippet = ExtensionPreferences & {}
   /** Preferences accessible in the `history` command */
@@ -24,9 +26,10 @@ declare namespace Preferences {
 declare namespace Arguments {
   /** Arguments passed to the `create-snippet` command */
   export type CreateSnippet = {}
+  /** Arguments passed to the `create-env` command */
+  export type CreateEnv = {}
   /** Arguments passed to the `paste-snippet` command */
   export type PasteSnippet = {}
   /** Arguments passed to the `history` command */
   export type History = {}
 }
-
